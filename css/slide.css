@@ -1,0 +1,72 @@
+h3#orgheadline6 {
+    opacity: 0.0;
+}
+
+h3#orgheadline8 {
+    opacity: 0.0;
+}
+
+h3#orgheadline11 {
+    opacity: 0.0;
+}
+
+/* compare-and-set! */
+h3#orgheadline13 {
+    opacity: 0.0;
+}
+
+/* reset! */
+h3#orgheadline15 {
+    opacity: 0.0;
+}
+
+/* add-watch */
+h3#orgheadline17 {
+    opacity: 0.0;
+}
+
+/* ref */
+h3#orgheadline23 {
+    opacity: 0.0;
+}
+
+/* ref-set */
+h3#orgheadline24 {
+    opacity: 0.0;
+}
+
+/* dosync */
+h3#orgheadline25 {
+    opacity: 0.0;
+}
+
+/* alter */
+h3#orgheadline27 {
+    opacity: 0.0;
+}
+
+/* commute */
+h3#orgheadline30 {
+    opacity: 0.0;
+}
+
+/* def */
+h3#orgheadline35 {
+    opacity: 0.0;
+}
+/* pmap */
+h3#orgheadline40 {
+    opacity: 0.0;
+}
+
+/* code region background */
+pre.prettyprint {
+    background-color: #2e3436;
+    color: #eeeeec;
+    white-space: pre-wrap;
+}
+
+pre.example {
+    background-color: #2e3436;
+    color: #eeeeec;
+}

@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<!-- 2016-09-08 Thu 18:06 -->
+<meta  charset="utf-8" />
+<meta  htto-equiv="X-UA-Compatible" content="chrome=1" />
+<meta  name="generator" content="Org-mode with org-ioslide" />
+<meta  name="author" content="coldnew" />
+
+
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--This one seems to work all the time, but really small on ipad-->
+<!--<meta name="viewport" content="initial-scale=0.4">-->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="stylesheet" media="all" href="theme/css/default.css" />
+<link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css" />
+<link rel="stylesheet" media="all" href="theme/css/small-icon.css" />
+<base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+<script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/slide.css"/>
+
+   <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
+
+<script src="js/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,local/local" type="text/javascript"></script>
+</head>
+<body style="opacity: 0">
+<slides class="layout-widescreen">
+<slide class="title-slide segue nobackground">
+       <aside class="gdbar"><img src="images/clojuretw-icon.png"></aside>
+       <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+       <hgroup class="auto-fadein">
+         <h1 data-config-title><!-- populated from slide_config.json --></h1>
+         <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+         <p data-config-presenter><!-- populated from slide_config.json --></p>
+       </hgroup>
+    </slide>
+  
+<slide id="sec-" class=" segue dark quote nobackground" style="background-image: url(nil)">
+<aside class="gdbar right bottom"><img src="images/clojuretw-icon.png"></aside><hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5">Clojure Metaphysics</h2>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="flexbox vleft auto-fadein" id="text-">
+<p>
+Atoms, Refs, Vars, and Cuddle Zombies
+</p>
+
+
+</article>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline1" class="outline-3">
+<h3 id="orgheadline1">Cuddle Zombies</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<article class="flexbox vcenter">
+
+<div class="figure">
+<p><img src="images/cuddle_zombie_by_nox_caelum.jpg" alt="cuddle_zombie_by_nox_caelum.jpg" width="400px" />
+</p>
+</div>
+</article>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2">Cuddle Zombies in Ruby</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="ruby">
+<span style="color: #aaffaa;">class</span> <span style="color: #fff59d;">CuddleZombie</span>
+  <span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">attr_accessor is just a shorthand way for creating getters and</span>
+  <span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">setters for the listed instance variables</span>
+  <span style="color: #ccaaff;">attr_accessor</span> <span style="color: #ccaaff;">:cuddle_hunger_level</span>, <span style="color: #ccaaff;">:percent_deteriorated</span>
+
+  <span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">initialize</span><span style="color: #aadddd;">(</span>cuddle_hunger_level = <span style="color: #ccaaff;">1</span>, percent_deteriorated = <span style="color: #ccaaff;">0</span><span style="color: #aadddd;">)</span>
+    <span style="color: #aaffaa;">self</span>.cuddle_hunger_level = cuddle_hunger_level
+    <span style="color: #aaffaa;">self</span>.percent_deteriorated = percent_deteriorated
+  <span style="color: #aaffaa;">end</span>
+<span style="color: #aaffaa;">end</span>
+
+fred = <span style="color: #fff59d;">CuddleZombie</span>.new<span style="color: #aadddd;">(</span><span style="color: #ccaaff;">2</span>, <span style="color: #ccaaff;">3</span><span style="color: #aadddd;">)</span>
+fred.cuddle_hunger_level  <span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">=&gt; 2</span>
+fred.percent_deteriorated <span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">=&gt; 3</span>
+
+fred.cuddle_hunger_level = <span style="color: #ccaaff;">3</span>
+fred.cuddle_hunger_level <span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">=&gt; 3</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">Cuddle Zombies in Multi-Thread (1/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="ruby">
+<span style="color: #aaffaa;">if</span> fred.percent_deteriorated &gt;= <span style="color: #ccaaff;">50</span>
+  <span style="color: #fff59d;">Thread</span>.new <span style="color: #aadddd;">{</span> database_logger.log<span style="color: #81d4fa;">(</span>fred.cuddle_hunger_level<span style="color: #81d4fa;">)</span> <span style="color: #aadddd;">}</span>
+<span style="color: #aaffaa;">end</span>
+</pre>
+
+</div>
+
+<article class="flexbox vcenter">
+
+<div class="figure">
+<p><img src="images/fred-read.png" alt="fred-read.png" />
+</p>
+</div>
+</article>
+
+
+</article>
+
+</slide>
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4">Cuddle Zombies in Multi-Thread (2/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="ruby">
+fred.cuddle_hunger_level = fred.cuddle_hunger_level + <span style="color: #ccaaff;">1</span>
+<span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">At this time, another thread could read fred's attributes and</span>
+<span style="color: #5f5f5f; font-style: italic;"># </span><span style="color: #9ac; font-style: italic;">"perceive" fred in an inconsistent state unless you use a mutex</span>
+fred.percent_deteriorated = fred.percent_deteriorated + <span style="color: #ccaaff;">1</span>
+</pre>
+
+</div>
+
+<article class="flexbox vcenter">
+
+<div class="figure">
+<p><img src="images/fred-read.png" alt="fred-read.png" />
+</p>
+</div>
+</article>
+
+
+</article>
+
+</slide>
+
+</slide>
+
+</slide>
+<slide id="sec-" class=" segue dark quote nobackground" style="background-image: url(nil)">
+<aside class="gdbar right bottom"><img src="images/clojuretw-icon.png"></aside><hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline22" class="outline-2">
+<h2 id="orgheadline22">Clojure Metaphysics</h2>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="flexbox vleft auto-fadein" id="text-">
+<p>
+Atoms
+</p>
+
+
+</article>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/atom.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline6" class="outline-3">
+<h3 id="orgheadline6">clojure.core/atom</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7">Cuddle Zombies in Clojure</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="smaller" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">fred</span> <span style="color: #81d4fa;">(</span>atom <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">0</span>
+                 <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">0</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+@fred
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 0, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 0}</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">let</span> <span style="color: #81d4fa;">[</span>zombie-state @fred<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">if</span> <span style="color: #aaccff;">(</span>&gt;= <span style="color: #aaeecc;">(</span><span style="color: #ccaaff;">:percent-deteriorated</span> zombie-state<span style="color: #aaeecc;">)</span> <span style="color: #ccaaff;">50</span><span style="color: #aaccff;">)</span>
+    <span style="color: #aaccff;">(</span>future <span style="color: #aaeecc;">(</span>println <span style="color: #ccaaff;">(</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> zombie-state<span style="color: #ccaaff;">)</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+</pre>
+
+</div>
+
+<article class="flexbox vcenter">
+
+<div class="figure">
+<p><img src="images/fp-metaphysics.png" alt="fp-metaphysics.png" />
+</p>
+</div>
+</article>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill white nobackground" style="background-image: url(images/swap.png)">
+<hgroup class="">
+       <h2 class="transparent "><div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8">clojure.core/swap!</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline9" class="outline-3">
+<h3 id="orgheadline9">swap! fred (1/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">fred</span> <span style="color: #81d4fa;">(</span>atom <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">0</span>
+                 <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">0</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>merge-with + @fred <span style="color: #81d4fa;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">1</span><span style="color: #81d4fa;">}</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 1, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 0}</span>
+
+<span style="color: #aadddd;">(</span>swap! fred
+       <span style="color: #81d4fa;">(</span>fn <span style="color: #aaccff;">[</span>current-state<span style="color: #aaccff;">]</span>
+         <span style="color: #aaccff;">(</span>merge-with + current-state <span style="color: #aaeecc;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">1</span><span style="color: #aaeecc;">}</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 1, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 0}</span>
+
+@fred
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 1, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 0}</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline10" class="outline-3">
+<h3 id="orgheadline10">swap! fred (2/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">fred</span> <span style="color: #81d4fa;">(</span>atom <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">0</span>
+                 <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">0</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">increase-cuddle-hunger-level</span>
+  <span style="color: #81d4fa;">[</span>zombie-state increase-by<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>merge-with + zombie-state <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> increase-by<span style="color: #aaccff;">}</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>increase-cuddle-hunger-level @fred <span style="color: #ccaaff;">10</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 12, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 1}</span>
+
+<span style="color: #aadddd;">(</span>swap! fred increase-cuddle-hunger-level <span style="color: #ccaaff;">10</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 12, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 1}</span>
+
+@fred
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 12, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 1}</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/update-in.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11">clojure.core/update-in</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline12" class="outline-3">
+<h3 id="orgheadline12">update-in fred</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span>update-in <span style="color: #81d4fa;">{</span><span style="color: #ccaaff;">:a</span> <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:b</span> <span style="color: #ccaaff;">3</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">}</span> <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:a</span> <span style="color: #ccaaff;">:b</span><span style="color: #81d4fa;">]</span> inc<span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:a</span><span style="color: #9ac; font-style: italic;"> {</span><span style="color: #9ac; font-style: italic;">:b</span><span style="color: #9ac; font-style: italic;"> 4}}</span>
+
+<span style="color: #aadddd;">(</span>update-in <span style="color: #81d4fa;">{</span><span style="color: #ccaaff;">:a</span> <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:b</span> <span style="color: #ccaaff;">3</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">}</span> <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:a</span> <span style="color: #ccaaff;">:b</span><span style="color: #81d4fa;">]</span> + <span style="color: #ccaaff;">10</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:a</span><span style="color: #9ac; font-style: italic;"> {</span><span style="color: #9ac; font-style: italic;">:b</span><span style="color: #9ac; font-style: italic;"> 13}}</span>
+
+<span style="color: #aadddd;">(</span>swap! fred update-in <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:cuddle-hunger-level</span><span style="color: #81d4fa;">]</span> + <span style="color: #ccaaff;">10</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;"> 22, </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 1}</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">let</span> <span style="color: #81d4fa;">[</span>num <span style="color: #aaccff;">(</span>atom <span style="color: #ccaaff;">1</span><span style="color: #aaccff;">)</span>
+      s1 @num<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>swap! num inc<span style="color: #81d4fa;">)</span>
+  <span style="color: #81d4fa;">(</span>println <span style="color: #aadddd;">"State 1:"</span> s1<span style="color: #81d4fa;">)</span>
+  <span style="color: #81d4fa;">(</span>println <span style="color: #aadddd;">"Current state:"</span> @num<span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; State 1: 1</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; Current state: 2</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/compare-and-set.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline13" class="outline-3">
+<h3 id="orgheadline13">clojure.core/compare-and-set!</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline14" class="outline-3">
+<h3 id="orgheadline14">clojure.core/compare-and-set! examples</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">first we make a demonstration atom</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">a</span> <span style="color: #81d4fa;">(</span>atom <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">#'user/a</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">failing to set the demonstration atom because the old-value does not match.</span>
+<span style="color: #aadddd;">(</span>compare-and-set! a <span style="color: #ccaaff;">10</span> <span style="color: #ccaaff;">20</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; false</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">as you can see there was no change to the atom</span>
+@a
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; 0</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">but when  the old-value matches the atom is set to the new-value.</span>
+<span style="color: #aadddd;">(</span>compare-and-set! a <span style="color: #ccaaff;">0</span> <span style="color: #ccaaff;">10</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; true</span>
+
+@a
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; 10</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/reset.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline15" class="outline-3">
+<h3 id="orgheadline15">clojure.core/reset!</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline16" class="outline-3">
+<h3 id="orgheadline16">reset! fred</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span>reset! fred <span style="color: #81d4fa;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">0</span>
+              <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">}</span><span style="color: #aadddd;">)</span>
+
+@fred
+<span style="color: #5f5f5f; font-style: italic;">;;  </span><span style="color: #9ac; font-style: italic;">=&gt; {</span><span style="color: #9ac; font-style: italic;">:cuddle-hunger-level</span><span style="color: #9ac; font-style: italic;">  0</span>
+<span style="color: #5f5f5f; font-style: italic;">;;      </span><span style="color: #9ac; font-style: italic;">:percent-deteriorated</span><span style="color: #9ac; font-style: italic;"> 0}</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/add-watch.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline17" class="outline-3">
+<h3 id="orgheadline17">clojure.core/add-watch</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline18" class="outline-3">
+<h3 id="orgheadline18">clojure.core/add-watch example</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">a</span> <span style="color: #81d4fa;">(</span>atom <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>add-watch a <span style="color: #ccaaff;">:count-to-3</span>
+           <span style="color: #81d4fa;">(</span>fn <span style="color: #aaccff;">[</span>k r old-state new-state<span style="color: #aaccff;">]</span>
+             <span style="color: #aaccff;">(</span>println <span style="color: #aadddd;">"changed from"</span> old-state <span style="color: #aadddd;">"to"</span> new-state<span style="color: #aaccff;">)</span>
+             <span style="color: #aaccff;">(</span><span style="color: #aaffaa;">when</span> <span style="color: #aaeecc;">(</span>&gt;= new-state <span style="color: #ccaaff;">3</span><span style="color: #aaeecc;">)</span>
+               <span style="color: #aaeecc;">(</span>remove-watch a <span style="color: #ccaaff;">:count-to-3</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; #&lt;Atom@3287a10: 0&gt;</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">dotimes</span> <span style="color: #81d4fa;">[</span>_ <span style="color: #ccaaff;">5</span><span style="color: #81d4fa;">]</span> <span style="color: #81d4fa;">(</span>swap! a inc<span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; changed from 0 to 1</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; changed from 1 to 2</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; changed from 2 to 3</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; nil</span>
+
+@a
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; 5</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline19" class="outline-3">
+<h3 id="orgheadline19">add-watch fred</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span>reset! fred <span style="color: #81d4fa;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">22</span>
+              <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">2</span><span style="color: #81d4fa;">}</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span>add-watch fred <span style="color: #ccaaff;">:fred-shuffle-alert</span> shuffle-alert<span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span>swap! fred update-in <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:percent-deteriorated</span><span style="color: #81d4fa;">]</span> + <span style="color: #ccaaff;">1</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; All's well with  </span><span style="color: #9ac; font-style: italic;">:fred-shuffle-alert</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; Cuddle hunger:  22</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; Percent deteriorated:  3</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; SPH:  2134</span>
+
+<span style="color: #aadddd;">(</span>swap! fred update-in <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:cuddle-hunger-level</span><span style="color: #81d4fa;">]</span> + <span style="color: #ccaaff;">30</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; Run, you fool!</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; The zombie's SPH is now 5044</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; This message brought to your courtesy of </span><span style="color: #9ac; font-style: italic;">:fred-shuffle-alert</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline20" class="outline-3">
+<h3 id="orgheadline20">Validators (1/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">percent-deteriorated-validator</span>
+  <span style="color: #81d4fa;">[</span><span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:keys</span> <span style="color: #aaeecc;">[</span>percent-deteriorated<span style="color: #aaeecc;">]</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">and</span> <span style="color: #aaccff;">(</span>&gt;= percent-deteriorated <span style="color: #ccaaff;">0</span><span style="color: #aaccff;">)</span>
+       <span style="color: #aaccff;">(</span>&lt;= percent-deteriorated <span style="color: #ccaaff;">100</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">bobby</span>
+  <span style="color: #81d4fa;">(</span>atom
+   <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">0</span> <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">0</span><span style="color: #aaccff;">}</span>
+   <span style="color: #ccaaff;">:validator</span> percent-deteriorated-validator<span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>swap! bobby update-in <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:percent-deteriorated</span><span style="color: #81d4fa;">]</span> + <span style="color: #ccaaff;">200</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">This throws "Invalid reference state"</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline21" class="outline-3">
+<h3 id="orgheadline21">Validators (2/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">percent-deteriorated-validator</span>
+  <span style="color: #81d4fa;">[</span><span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:keys</span> <span style="color: #aaeecc;">[</span>percent-deteriorated<span style="color: #aaeecc;">]</span><span style="color: #aaccff;">}</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">or</span> <span style="color: #aaccff;">(</span><span style="color: #aaffaa;">and</span> <span style="color: #aaeecc;">(</span>&gt;= percent-deteriorated <span style="color: #ccaaff;">0</span><span style="color: #aaeecc;">)</span>
+           <span style="color: #aaeecc;">(</span>&lt;= percent-deteriorated <span style="color: #ccaaff;">100</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span>
+      <span style="color: #aaccff;">(</span><span style="color: #aaffaa;">throw</span> <span style="color: #aaeecc;">(</span><span style="color: #fff59d;">IllegalStateException.</span> <span style="color: #aadddd;">"That's not mathy!"</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">bobby</span>
+  <span style="color: #81d4fa;">(</span>atom
+   <span style="color: #aaccff;">{</span><span style="color: #ccaaff;">:cuddle-hunger-level</span> <span style="color: #ccaaff;">0</span> <span style="color: #ccaaff;">:percent-deteriorated</span> <span style="color: #ccaaff;">0</span><span style="color: #aaccff;">}</span>
+    <span style="color: #ccaaff;">:validator</span> percent-deteriorated-validator<span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>swap! bobby update-in <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">:percent-deteriorated</span><span style="color: #81d4fa;">]</span> + <span style="color: #ccaaff;">200</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">This throws "IllegalStateException: That's not mathy!"</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+
+</slide>
+<slide id="sec-" class=" segue dark quote nobackground" style="background-image: url(nil)">
+<aside class="gdbar right bottom"><img src="images/clojuretw-icon.png"></aside><hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline33" class="outline-2">
+<h2 id="orgheadline33">Clojure Metaphysics</h2>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="flexbox vleft auto-fadein" id="text-">
+<p>
+Refs
+</p>
+
+
+</article>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/ref.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline23" class="outline-3">
+<h3 id="orgheadline23">clojure.core/ref</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/ref-set.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline24" class="outline-3">
+<h3 id="orgheadline24">clojure.core/ref-set</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/dosync.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline25" class="outline-3">
+<h3 id="orgheadline25">clojure.core/dosync</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline26" class="outline-3">
+<h3 id="orgheadline26">clojure.core/ref examples</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">create(ref)</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">a</span> <span style="color: #81d4fa;">(</span>ref '<span style="color: #aaccff;">(</span><span style="color: #ccaaff;">1</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">3</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">read(deref)</span>
+<span style="color: #aadddd;">(</span>deref a<span style="color: #aadddd;">)</span> <span style="color: #9ac; font-style: italic;">; -&gt; (1 2 3)</span>
+@a        <span style="color: #9ac; font-style: italic;">; -&gt; (1 2 3)</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">rewrite(ref-set)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">(ref-set a '(3 2 1)) err!</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">dosync</span> <span style="color: #81d4fa;">(</span>ref-set a '<span style="color: #aaccff;">(</span><span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">1</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>deref a<span style="color: #aadddd;">)</span> <span style="color: #9ac; font-style: italic;">; -&gt; (3 2 1)</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/alter.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline27" class="outline-3">
+<h3 id="orgheadline27">clojure.core/alter</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline28" class="outline-3">
+<h3 id="orgheadline28">clojure.core/alter examples</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">names</span> <span style="color: #81d4fa;">(</span>ref <span style="color: #aaccff;">[]</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; #'user/names</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">A function to add a name to the vector (notice the meat's wrapped</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">in a dosync</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">add-name</span> <span style="color: #81d4fa;">[</span>name<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dosync</span> <span style="color: #aaccff;">(</span>alter names conj name<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; #'user/add-name</span>
+
+<span style="color: #aadddd;">(</span>add-name <span style="color: #aadddd;">"zack"</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; ["zack"]</span>
+
+<span style="color: #aadddd;">(</span>add-name <span style="color: #aadddd;">"shelley"</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; ["zack" "shelley"]</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">To get the actual value of the ref, you use the '@' symbol, or deref</span>
+<span style="color: #aadddd;">(</span>println @names<span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">[zack shelley]</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline29" class="outline-3">
+<h3 id="orgheadline29">demo of in-transaction state</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">counter</span> <span style="color: #81d4fa;">(</span>ref <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>future
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dosync</span>
+   <span style="color: #aaccff;">(</span>alter counter inc<span style="color: #aaccff;">)</span>
+   <span style="color: #aaccff;">(</span>println @counter<span style="color: #aaccff;">)</span>                   <span style="color: #9ac; font-style: italic;">;=&gt; 1</span>
+   <span style="color: #aaccff;">(</span><span style="color: #fff59d;">Thread</span><span style="color: #c6cccc; background-color: #202020;">/</span>sleep <span style="color: #ccaaff;">500</span><span style="color: #aaccff;">)</span>
+   <span style="color: #aaccff;">(</span>alter counter inc<span style="color: #aaccff;">)</span>
+   <span style="color: #aaccff;">(</span>println @counter<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>                 <span style="color: #9ac; font-style: italic;">;=&gt; 2</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #fff59d;">Thread</span><span style="color: #c6cccc; background-color: #202020;">/</span>sleep <span style="color: #ccaaff;">250</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span>println @counter<span style="color: #aadddd;">)</span>                      <span style="color: #9ac; font-style: italic;">;=&gt; 0</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; 1</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; 0</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; 2</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/commute.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline30" class="outline-3">
+<h3 id="orgheadline30">clojure.core/commute</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline31" class="outline-3">
+<h3 id="orgheadline31">clojure.core/commute example</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="smaller" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">counter</span> <span style="color: #81d4fa;">(</span>ref <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">deciding whether to increment the counter takes the terribly long time</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">of 100 ms -- it is decided by committee.</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">commute-inc!</span> <span style="color: #81d4fa;">[</span>counter<span style="color: #81d4fa;">]</span> <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dosync</span> <span style="color: #aaccff;">(</span><span style="color: #fff59d;">Thread</span><span style="color: #c6cccc; background-color: #202020;">/</span>sleep <span style="color: #ccaaff;">100</span><span style="color: #aaccff;">)</span> <span style="color: #aaccff;">(</span>commute counter inc<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">alter-inc!</span>   <span style="color: #81d4fa;">[</span>counter<span style="color: #81d4fa;">]</span> <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dosync</span> <span style="color: #aaccff;">(</span><span style="color: #fff59d;">Thread</span><span style="color: #c6cccc; background-color: #202020;">/</span>sleep <span style="color: #ccaaff;">100</span><span style="color: #aaccff;">)</span> <span style="color: #aaccff;">(</span>alter counter inc<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">what if n people try to hit the counter at once?</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">bombard-counter!</span> <span style="color: #81d4fa;">[</span>n f counter<span style="color: #81d4fa;">]</span> <span style="color: #81d4fa;">(</span>apply pcalls <span style="color: #aaccff;">(</span>repeat n #<span style="color: #aaeecc;">(</span>f counter<span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">dosync</span> <span style="color: #81d4fa;">(</span>ref-set counter <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>            <span style="color: #9ac; font-style: italic;">; set counter to 0</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">doall</span> <span style="color: #aaccff;">(</span>bombard-counter! <span style="color: #ccaaff;">20</span> alter-inc! counter<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 2007.049224 msecs"</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; (3 1 2 4 7 10 5 8 6 9 13 14 15 12 11 16 17 20 18 19)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">note that it took about 2000 ms = (20 workers * 100 ms / update)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">dosync</span> <span style="color: #81d4fa;">(</span>ref-set counter <span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>            <span style="color: #9ac; font-style: italic;">; set counter to 0</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">doall</span> <span style="color: #aaccff;">(</span>bombard-counter! <span style="color: #ccaaff;">20</span> commute-inc! counter<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 401.748181 msecs"</span>
+<span style="color: #5f5f5f; font-style: italic;">;;</span><span style="color: #9ac; font-style: italic;">=&gt; (1 2 3 4 5 9 10 6 7 8 11 15 13 12 14 16 19 17 18 20)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">notice that we got actual concurrency this time.</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline32" class="outline-3">
+<h3 id="orgheadline32">Validators</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">Note the use of the </span><span style="color: #9ac; font-style: italic;">:validator</span><span style="color: #9ac; font-style: italic;"> directive when creating the Ref</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">to assign a validation function which is integer? in this case.</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">my-ref</span> <span style="color: #81d4fa;">(</span>ref <span style="color: #ccaaff;">0</span> <span style="color: #ccaaff;">:validator</span> integer?<span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">try</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dosync</span>
+    <span style="color: #aaccff;">(</span>ref-set my-ref <span style="color: #ccaaff;">1</span><span style="color: #aaccff;">)</span> <span style="color: #9ac; font-style: italic;">; works</span>
+
+    <span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">The next line doesn't work, so the transaction is rolled back</span>
+    <span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">and the previous change isn't committed.</span>
+    <span style="color: #aaccff;">(</span>ref-set my-ref <span style="color: #aadddd;">"foo"</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">catch</span> <span style="color: #fff59d;">IllegalStateException</span> e
+    <span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">do nothing</span>
+    <span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>println <span style="color: #aadddd;">"my-ref ="</span> @my-ref<span style="color: #aadddd;">)</span> <span style="color: #9ac; font-style: italic;">; due to validation failure -&gt; 0</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+
+</slide>
+<slide id="sec-" class=" segue dark quote nobackground" style="background-image: url(nil)">
+<aside class="gdbar right bottom"><img src="images/clojuretw-icon.png"></aside><hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline39" class="outline-2">
+<h2 id="orgheadline39">Clojure Metaphysics</h2>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="flexbox vleft auto-fadein" id="text-">
+<p>
+Vars
+</p>
+
+
+</article>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/def.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline34" class="outline-3">
+<h3 id="orgheadline34">clojure.core/def</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline35" class="outline-3">
+<h3 id="orgheadline35">Dynamic binding</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> ^<span style="color: #ccaaff;">:dynamic</span> <span style="color: #aaccff;">*notification-address*</span> <span style="color: #97abc6; font-style: italic;">"dobby@elf.org"</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">binding</span> <span style="color: #81d4fa;">[</span><span style="color: #aaccff;">*notification-address*</span> <span style="color: #aadddd;">"test@elf.org"</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #aaccff;">*notification-address*</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; "test@elf.org"</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">notify</span>
+  <span style="color: #81d4fa;">[</span>message<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>str <span style="color: #aadddd;">"TO: "</span> <span style="color: #aaccff;">*notification-address*</span> <span style="color: #aadddd;">"</span><span style="color: #ccaaff; font-weight: bold;">\</span><span style="color: #ff8888; font-weight: bold;">n</span><span style="color: #aadddd;">"</span>
+       <span style="color: #aadddd;">"MESSAGE: "</span> message<span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span>notify <span style="color: #aadddd;">"I fell."</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; "TO: dobby@elf.org\nMESSAGE: I fell."</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">binding</span> <span style="color: #81d4fa;">[</span><span style="color: #aaccff;">*notification-address*</span> <span style="color: #aadddd;">"test@elf.org"</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>notify <span style="color: #aadddd;">"test!"</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; "TO: test@elf.org\nMESSAGE: test!"</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline36" class="outline-3">
+<h3 id="orgheadline36">Override clojure's dynamic vars</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">binding</span> <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">*out*</span> <span style="color: #aaccff;">(</span><span style="color: #fff59d;">clojure.java.io</span><span style="color: #c6cccc; background-color: #202020;">/</span>writer <span style="color: #aadddd;">"print-output"</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>println <span style="color: #aadddd;">"A man who carries a cat by the tail learns something he can learn in no other way. -- Mark Twain"</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>slurp <span style="color: #aadddd;">"print-output"</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; A man who carries a cat by the tail learns something he can learn in no other way. -- Mark Twain</span>
+
+<span style="color: #aadddd;">(</span>println <span style="color: #81d4fa;">[</span><span style="color: #aadddd;">"Print"</span> <span style="color: #aadddd;">"all"</span> <span style="color: #aadddd;">"the"</span> <span style="color: #aadddd;">"things!"</span><span style="color: #81d4fa;">]</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; [Print all the things!]</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">binding</span> <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">*print-length*</span> <span style="color: #ccaaff;">1</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>println <span style="color: #aaccff;">[</span><span style="color: #aadddd;">"Print"</span> <span style="color: #aadddd;">"just"</span> <span style="color: #aadddd;">"one!"</span><span style="color: #aaccff;">]</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; [Print ...]</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline37" class="outline-3">
+<h3 id="orgheadline37">Troll thought</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> ^<span style="color: #ccaaff;">:dynamic</span> <span style="color: #aaccff;">*troll-thought*</span> <span style="color: #ccaaff;">nil</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">troll-riddle</span>
+  <span style="color: #81d4fa;">[</span>your-answer<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">let</span> <span style="color: #aaccff;">[</span>number <span style="color: #aadddd;">"man meat"</span><span style="color: #aaccff;">]</span>
+&#10122;     <span style="color: #aaccff;">(</span><span style="color: #aaffaa;">when</span> <span style="color: #aaeecc;">(</span>thread-bound? #'<span style="color: #aaccff;">*troll-thought*</span><span style="color: #aaeecc;">)</span>
+&#10123;       <span style="color: #aaeecc;">(</span><span style="color: #aaffaa;">set!</span> <span style="color: #aaccff;">*troll-thought*</span> number<span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span>
+    <span style="color: #aaccff;">(</span><span style="color: #aaffaa;">if</span> <span style="color: #aaeecc;">(</span>= number your-answer<span style="color: #aaeecc;">)</span>
+      <span style="color: #aadddd;">"TROLL: You can cross the bridge!"</span>
+      <span style="color: #aadddd;">"TROLL: Time to eat you, succulent human!"</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">binding</span> <span style="color: #81d4fa;">[</span><span style="color: #aaccff;">*troll-thought*</span> <span style="color: #ccaaff;">nil</span><span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>println <span style="color: #aaccff;">(</span>troll-riddle <span style="color: #ccaaff;">2</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span> <span style="color: #9ac; font-style: italic;">; =&gt; TROLL: Time to eat you, succulent human!</span>
+  <span style="color: #81d4fa;">(</span>println <span style="color: #aadddd;">"SUCCULENT HUMAN: Oooooh! The answer was"</span> <span style="color: #aaccff;">*troll-thought*</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span> <span style="color: #9ac; font-style: italic;">; =&gt; SUCCULENT HUMAN: Oooooh! The answer was man meat</span>
+
+<span style="color: #aaccff;">*troll-thought*</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; nil</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline38" class="outline-3">
+<h3 id="orgheadline38">Altering the Var Root</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">power-source</span> <span style="color: #97abc6; font-style: italic;">"hair"</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>alter-var-root #'power-source <span style="color: #81d4fa;">(</span>fn <span style="color: #aaccff;">[</span>_<span style="color: #aaccff;">]</span> <span style="color: #aadddd;">"7-eleven parking lot"</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+power-source
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; "7-eleven parking lot"</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">with-redefs</span> <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">*out*</span> <span style="color: #ccaaff;">*out*</span><span style="color: #81d4fa;">]</span>
+        <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">doto</span> <span style="color: #aaccff;">(</span><span style="color: #fff59d;">Thread.</span> #<span style="color: #aaeecc;">(</span>println <span style="color: #aadddd;">"with redefs allows me to show up in the REPL"</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span>
+          <span style="color: #ff8888;">.start</span>
+          <span style="color: #ff8888;">.join</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">add-5</span> <span style="color: #81d4fa;">[</span>n<span style="color: #81d4fa;">]</span> <span style="color: #81d4fa;">(</span>+ n <span style="color: #ccaaff;">5</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">with-redefs-fn</span> <span style="color: #81d4fa;">{</span>#'add-5 <span style="color: #aaccff;">(</span>fn <span style="color: #aaeecc;">[</span>n<span style="color: #aaeecc;">]</span> <span style="color: #aaeecc;">(</span>+ n <span style="color: #ccaaff;">50</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">}</span>
+  #<span style="color: #81d4fa;">(</span>is <span style="color: #aaccff;">(</span>= <span style="color: #ccaaff;">60</span> <span style="color: #aaeecc;">(</span>add-5 <span style="color: #ccaaff;">10</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+
+</slide>
+<slide id="sec-" class=" segue dark quote nobackground" style="background-image: url(nil)">
+<aside class="gdbar right bottom"><img src="images/clojuretw-icon.png"></aside><hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline48" class="outline-2">
+<h2 id="orgheadline48">Stateless Concurrency and Parallelism</h2>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="flexbox vleft auto-fadein" id="text-">
+<p>
+pmap
+</p>
+
+
+</article>
+
+</slide>
+<slide id="sec-" class="fill nil nobackground" style="background-image: url(images/pmap.png)">
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline40" class="outline-3">
+<h3 id="orgheadline40">clojure.core/pmap</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline41" class="outline-3">
+<h3 id="orgheadline41">compare map with pmap</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">alphabet-length</span> <span style="color: #ccaaff;">26</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">letters</span> <span style="color: #81d4fa;">(</span>mapv <span style="color: #aaccff;">(</span>comp str char <span style="color: #aaeecc;">(</span>partial + <span style="color: #ccaaff;">65</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span> <span style="color: #aaccff;">(</span>range alphabet-length<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">random-string</span> <span style="color: #81d4fa;">[</span>length<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>apply str <span style="color: #aaccff;">(</span>take length <span style="color: #aaeecc;">(</span>repeatedly #<span style="color: #ccaaff;">(</span>rand-nth letters<span style="color: #ccaaff;">)</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">random-string-list</span>
+  <span style="color: #81d4fa;">[</span>list-length string-length<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">doall</span> <span style="color: #aaccff;">(</span>take list-length <span style="color: #aaeecc;">(</span>repeatedly <span style="color: #ccaaff;">(</span>partial random-string string-length<span style="color: #ccaaff;">)</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">orc-names</span> <span style="color: #81d4fa;">(</span>random-string-list <span style="color: #ccaaff;">3000</span> <span style="color: #ccaaff;">7000</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dorun</span> <span style="color: #aaccff;">(</span>map <span style="color: #fff59d;">clojure.string</span><span style="color: #c6cccc; background-color: #202020;">/</span>lower-case orc-names<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 270.182 msecs"</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dorun</span> <span style="color: #aaccff;">(</span>pmap <span style="color: #fff59d;">clojure.string</span><span style="color: #c6cccc; background-color: #202020;">/</span>lower-case orc-names<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 147.562 msecs"</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline42" class="outline-3">
+<h3 id="orgheadline42">pmap can take longer than map (1/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<article class="flexbox vcenter">
+
+<div class="figure">
+<p><img src="images/pmap-small-grain.png" alt="pmap-small-grain.png" />
+</p>
+</div>
+</article>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline43" class="outline-3">
+<h3 id="orgheadline43">pmap can take longer than map (2/2)</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">def</span> <span style="color: #aaccff;">orc-name-abbrevs</span> <span style="color: #81d4fa;">(</span>random-string-list <span style="color: #ccaaff;">20000</span> <span style="color: #ccaaff;">300</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dorun</span> <span style="color: #aaccff;">(</span>map <span style="color: #fff59d;">clojure.string</span><span style="color: #c6cccc; background-color: #202020;">/</span>lower-case orc-name-abbrevs<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 78.23 msecs"</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dorun</span> <span style="color: #aaccff;">(</span>pmap <span style="color: #fff59d;">clojure.string</span><span style="color: #c6cccc; background-color: #202020;">/</span>lower-case orc-name-abbrevs<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">; </span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 124.727 msecs"</span>
+</pre>
+
+</div>
+
+<p>
+Now pmap actually takes <code>1.6 times longer</code>.
+</p>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline44" class="outline-3">
+<h3 id="orgheadline44">Increace grain size to speedup pmap</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<article class="flexbox vcenter">
+
+<div class="figure">
+<p><img src="images/ppmap.png" alt="ppmap.png" />
+</p>
+</div>
+</article>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline45" class="outline-3">
+<h3 id="orgheadline45">ppmap</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">ppmap</span>
+  <span style="color: #97abc6; font-style: italic;">"Partitioned pmap, for grouping map ops together to make parallel</span>
+<span style="color: #97abc6; font-style: italic;">  overhead worthwhile"</span>
+  <span style="color: #81d4fa;">[</span>grain-size f &amp; colls<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span>apply concat
+         <span style="color: #aaccff;">(</span>apply pmap
+                <span style="color: #aaeecc;">(</span>fn <span style="color: #ccaaff;">[</span>&amp; pgroups<span style="color: #ccaaff;">]</span> <span style="color: #ccaaff;">(</span><span style="color: #aaffaa;">doall</span> <span style="color: #fff59d;">(</span>apply map f pgroups<span style="color: #fff59d;">)</span><span style="color: #ccaaff;">)</span><span style="color: #aaeecc;">)</span>
+                <span style="color: #aaeecc;">(</span>map <span style="color: #ccaaff;">(</span>partial partition-all grain-size<span style="color: #ccaaff;">)</span> colls<span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dorun</span> <span style="color: #aaccff;">(</span>map <span style="color: #fff59d;">clojure.string</span><span style="color: #c6cccc; background-color: #202020;">/</span>lower-case orc-name-abbrevs<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 78.23 msecs"</span>
+
+<span style="color: #aadddd;">(</span>time <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">dorun</span> <span style="color: #aaccff;">(</span>ppmap <span style="color: #ccaaff;">1000</span> <span style="color: #fff59d;">clojure.string</span><span style="color: #c6cccc; background-color: #202020;">/</span>lower-case orc-name-abbrevs<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; "Elapsed time: 44.902 msecs"</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline46" class="outline-3">
+<h3 id="orgheadline46">淘寶面試題：如何充分利用多核 CPU，計算很大的 List 中所有整數的和</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span>partition <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">3</span> <span style="color: #81d4fa;">[</span><span style="color: #ccaaff;">0</span><span style="color: #81d4fa;">]</span> '<span style="color: #81d4fa;">(</span><span style="color: #ccaaff;">1</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">4</span> <span style="color: #ccaaff;">5</span> <span style="color: #ccaaff;">6</span> <span style="color: #ccaaff;">7</span> <span style="color: #ccaaff;">8</span> <span style="color: #ccaaff;">9</span> <span style="color: #ccaaff;">10</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; ((1 2 3) (4 5 6) (7 8 9) (10 0))</span>
+
+<span style="color: #aadddd;">(</span>reduce + <span style="color: #ccaaff;">0</span> '<span style="color: #81d4fa;">(</span><span style="color: #ccaaff;">1</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">3</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; 6</span>
+
+<span style="color: #aadddd;">(</span>map #<span style="color: #81d4fa;">(</span>reduce + <span style="color: #ccaaff;">0</span> <span style="color: #aaccff;">%</span><span style="color: #81d4fa;">)</span> <span style="color: #81d4fa;">(</span>partition <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">3</span> <span style="color: #aaccff;">[</span><span style="color: #ccaaff;">0</span><span style="color: #aaccff;">]</span> '<span style="color: #aaccff;">(</span><span style="color: #ccaaff;">1</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">4</span> <span style="color: #ccaaff;">5</span> <span style="color: #ccaaff;">6</span> <span style="color: #ccaaff;">7</span> <span style="color: #ccaaff;">8</span> <span style="color: #ccaaff;">9</span> <span style="color: #ccaaff;">10</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; (6 15 24 10)</span>
+
+<span style="color: #aadddd;">(</span>reduce + <span style="color: #ccaaff;">0</span> <span style="color: #81d4fa;">(</span>map #<span style="color: #aaccff;">(</span>reduce + <span style="color: #ccaaff;">0</span> <span style="color: #aaccff;">%</span><span style="color: #aaccff;">)</span> <span style="color: #aaccff;">(</span>partition <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">3</span> <span style="color: #aaeecc;">[</span><span style="color: #ccaaff;">0</span><span style="color: #aaeecc;">]</span> '<span style="color: #aaeecc;">(</span><span style="color: #ccaaff;">1</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">4</span> <span style="color: #ccaaff;">5</span> <span style="color: #ccaaff;">6</span> <span style="color: #ccaaff;">7</span> <span style="color: #ccaaff;">8</span> <span style="color: #ccaaff;">9</span> <span style="color: #ccaaff;">10</span><span style="color: #aaeecc;">)</span><span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt;  55</span>
+
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">mysum</span> <span style="color: #81d4fa;">[</span>coll n<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">let</span> <span style="color: #aaccff;">[</span>sub-colls   <span style="color: #aaeecc;">(</span>partition n n <span style="color: #ccaaff;">[</span><span style="color: #ccaaff;">0</span><span style="color: #ccaaff;">]</span> coll<span style="color: #aaeecc;">)</span>
+        result-coll <span style="color: #aaeecc;">(</span>map #<span style="color: #ccaaff;">(</span>reduce + <span style="color: #ccaaff;">0</span> <span style="color: #aaccff;">%</span><span style="color: #ccaaff;">)</span> sub-colls<span style="color: #aaeecc;">)</span> <span style="color: #aaccff;">]</span>
+    <span style="color: #aaccff;">(</span>reduce + <span style="color: #ccaaff;">0</span> result-coll<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+</pre>
+
+</div>
+
+
+</article>
+
+</slide>
+
+</slide>
+<slide id="sec-"  >
+<hgroup class="">
+       <h2 class=" "><div id="outline-container-orgheadline47" class="outline-3">
+<h3 id="orgheadline47">淘寶面試題：如何充分利用多核 CPU，計算很大的 List 中所有整數的和</h3>
+</div>
+</h2>
+       <h3></h3>
+       </hgroup>
+<article class="" id="text-">
+<div class="org-src-container">
+
+<pre class="prettyprint" data-lang="clojure">
+<span style="color: #aadddd;">(</span><span style="color: #aaffaa;">defn</span> <span style="color: #aaccff;">pmysum</span> <span style="color: #81d4fa;">[</span>coll n<span style="color: #81d4fa;">]</span>
+  <span style="color: #81d4fa;">(</span><span style="color: #aaffaa;">let</span> <span style="color: #aaccff;">[</span>sub-colls   <span style="color: #aaeecc;">(</span>partition n n <span style="color: #ccaaff;">[</span><span style="color: #ccaaff;">0</span><span style="color: #ccaaff;">]</span> coll<span style="color: #aaeecc;">)</span>
+        result-coll <span style="color: #aaeecc;">(</span>pmap #<span style="color: #ccaaff;">(</span>reduce + <span style="color: #ccaaff;">0</span> <span style="color: #aaccff;">%</span><span style="color: #ccaaff;">)</span> sub-colls<span style="color: #aaeecc;">)</span> <span style="color: #aaccff;">]</span>
+    <span style="color: #aaccff;">(</span>reduce + <span style="color: #ccaaff;">0</span> result-coll<span style="color: #aaccff;">)</span><span style="color: #81d4fa;">)</span><span style="color: #aadddd;">)</span>
+
+<span style="color: #aadddd;">(</span>psum '<span style="color: #81d4fa;">(</span><span style="color: #ccaaff;">0</span> <span style="color: #ccaaff;">1</span> <span style="color: #ccaaff;">2</span> <span style="color: #ccaaff;">3</span> <span style="color: #ccaaff;">4</span> <span style="color: #ccaaff;">5</span> <span style="color: #ccaaff;">6</span> <span style="color: #ccaaff;">7</span> <span style="color: #ccaaff;">8</span> <span style="color: #ccaaff;">9</span> <span style="color: #ccaaff;">10</span><span style="color: #81d4fa;">)</span> <span style="color: #ccaaff;">3</span><span style="color: #aadddd;">)</span>
+<span style="color: #5f5f5f; font-style: italic;">;; </span><span style="color: #9ac; font-style: italic;">=&gt; 55</span>
+</pre>
+
+</div>
+
+<p>
+link:  <a href="http://www.blogjava.net/killme2008/archive/2010/07/15/326171.html">幾行代碼解決淘寶面試題之 Clojure 版 - 莊周夢蝶 - BlogJava</a>
+</p>
+
+
+</article>
+
+</slide>
+
+</slide>
+
+</slide>
+<slide id="sec-" class=" thank-you-slide segue nobackground" style="background-image: url(nil)">
+<aside class="gdbar right"><img src="images/clojuretw-icon.png"></aside><article class="flexbox vleft auto-fadein" id="text-">
+<h2>
+  <p>Thank You</p>
+</h2>
+<br>
+<p class="auto-fadein" data-config-contact>
+</p>
+</article>
+
+</slide>
+<slide class="backdrop"></slide>
+</slides> 
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body> 
+
+</html>
